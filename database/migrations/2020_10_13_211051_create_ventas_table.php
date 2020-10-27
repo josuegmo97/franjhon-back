@@ -19,7 +19,10 @@ class CreateVentasTable extends Migration
             $table->integer('cantidad')->required();
             $table->string("puv_usd")->required();
             $table->string("puv_ves")->required();
+            $table->string("puv_usd_original")->nullable();
+            $table->string("puv_ves_original")->nullable();
             $table->boolean("perdida")->required();
+            $table->boolean("precio_modificado")->required();
             $table->foreign('articulo_id')->references("slug")->on('articulos');
             $table->timestamps();
         });

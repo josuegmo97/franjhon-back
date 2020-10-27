@@ -6,7 +6,7 @@ use App\Articulo;
 use App\Inventario;
 use Illuminate\Http\Request;
 
-class InventarioController extends Controller
+class InventarioController extends InventarioDeudaController
 {
     public function index($slug = null)
     {
@@ -30,8 +30,20 @@ class InventarioController extends Controller
             'pvu_usd' => 'required', // precio venta unitario usd
             'pvu_ves' => 'required', // precio venta unitario bolivares
             'valor_final_usd' => 'required', // valor al final de la venta, es decir la ganancia
-            'valor_final_ves' => 'required' // valor al final de la venta, es decir la ganancia
+            'valor_final_ves' => 'required', // valor al final de la venta, es decir la ganancia
+
+            'lote_pagado' => 'required'
         ]);
+
+        $tipo_pago = 'Contado';
+
+        if($request->lote_pagado == 0){
+            $request->validate([
+                'pago_inicial' => 'required'
+            ]);
+            $tipo_pago = 'Credito';
+        }
+
         
         $articulo = Articulo::where("slug", $request->articulo_id)->first();
 
@@ -51,8 +63,14 @@ class InventarioController extends Controller
             'pvu_usd' => $request->pvu_usd ,
             'pvu_ves' => $request->pvu_ves ,
             'valor_final_usd' => $request->valor_final_usd,
-            'valor_final_ves' => $request->valor_final_ves        
+            'valor_final_ves' => $request->valor_final_ves,   
+            'lote_pagado' => $request->lote_pagado,        
+            'tipo_pago' => $tipo_pago        
         ]);
+
+        if($request->lote_pagado == 0){
+            $this->registrarCredito($inventario->id, $request->pago_inicial);
+        }
 
         $articulo->entradas = $articulo->entradas + $inventario->cantidad;
         $articulo->existencia = $articulo->existencia + $inventario->cantidad;

@@ -47,11 +47,11 @@ class DolarController extends Controller
     {
         
         $data['fecha_actual'] = Carbon::now()->format('Y-m-d');
-        $data['hora_actual'] = Carbon::now()->format('h:i');
+        $data['hora_actual'] = Carbon::now()->format('H:i');
         $data['dia_actual'] = Carbon::parse($data['fecha_actual'])->format('l');
 
         // Mañana - 9
-        if($data['hora_actual'] >= "09:00" && $data['hora_actual'] < "12:59")
+        if($data['hora_actual'] >= "09:15" && $data['hora_actual'] < "13:15")
         {
             $data['type'] = "manana";
         }else{
@@ -63,7 +63,6 @@ class DolarController extends Controller
         }else{
             $data['fin_de_semana'] = false;
         }
-
 
         return $data;
     }

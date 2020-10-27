@@ -20,5 +20,8 @@ class Inventario extends Model
         'pvu_ves', // precio venta unitario bolivares
         'valor_final_usd', // valor al final de la venta, es decir la ganancia
         'valor_final_ves', // valor al final de la venta, es decir la ganancia
+
+        'lote_pagado',
+        'tipo_pago'
     ];
 }

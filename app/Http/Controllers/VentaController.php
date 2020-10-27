@@ -15,8 +15,12 @@ class VentaController extends Controller
             'ves' => 'required',
             'id' => 'required',
             'cantidad' => 'required',
-            'perdida' => 'required'
+            //'perdida' => 'required',
+
+            //'precio_modificado' => 'required' 
         ]);
+
+
 
         
         $articulo = Articulo::where("id", $request->id)->first();
@@ -25,11 +29,22 @@ class VentaController extends Controller
             return $this->errorResponse("La cantidad es mayor a la existencia");
         }
 
+        if($request->precio_modificado){
+            $request->perdida = false;
+        }else{
+            $request->precio_modificado = false;
+            $request->vesOriginal = null;
+            $request->usdOriginal = null;
+        }
+
         Venta::create([
             'puv_ves' => $request->ves,
             'puv_usd' => $request->usd,
+            'puv_ves_original' => $request->vesOriginal,
+            'puv_usd_original' => $request->usdOriginal,
             'perdida' => $request->perdida,
             'cantidad' => $request->cantidad,
+            'precio_modificado' => $request->precio_modificado,
             'articulo_id' => $articulo->slug
         ]);
 

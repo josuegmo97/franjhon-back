@@ -25,6 +25,8 @@ class CreateInventariosTable extends Migration
             $table->string("pvu_ves")->nullable();
             $table->string("valor_final_usd")->nullable();
             $table->string("valor_final_ves")->nullable();
+            $table->boolean("lote_pagado")->nullable();
+            $table->string("tipo_pago")->nullable();
             $table->foreign('articulo_id')->references("slug")->on('articulos');
             $table->timestamps();
         });

@@ -15,13 +15,13 @@ class UserSeeder extends Seeder
         if(count(User::all() )== 0)
         {
             User::create([
-                'name'     => 'Administrador',
+                'name'     => 'josue',
                 'email'    => 'admin@mail.com',
-                'password' => bcrypt('admin'),
+                'password' => bcrypt('admin0506'),
             ]);
 
             User::create([
-                'name'     => 'FranJhon',
+                'name'     => 'humberto',
                 'email'    => 'comercializadora_franjhon2013@hotmail.com',
                 'password' => bcrypt('humberto88'),
             ]);

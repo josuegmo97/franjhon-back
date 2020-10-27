@@ -57,6 +57,11 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/edit', 'InventarioController@edit');
         Route::post('/delete', 'InventarioController@delete');
         //Route::get('/show/{id}', 'InventarioController@show');
+
+        // DEUDA
+        Route::get('/pendiente/show/{id?}', 'InventarioDeudaController@verDeudas');
+        Route::post('/pendiente/delete', 'InventarioDeudaController@delete');
+        Route::post('/pendiente/agregar', 'InventarioDeudaController@agregarCredito');
     });
     
     Route::group(["prefix" => "venta"], function(){

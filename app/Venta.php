@@ -12,6 +12,10 @@ class Venta extends Model
             'puv_usd' ,
             'perdida' ,
             'cantidad' ,
+
+            'puv_usd_original' ,
+            'puv_ves_original' ,
+            'precio_modificado' 
     ];
 
     protected $casts = [
