@@ -83,5 +83,14 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/', 'ResumenController@index');
     });
 
+    Route::group(["prefix" => "consulta"], function(){
+        Route::post('/', 'ConsultaController@index');
+    });
+
     
+});
+
+Route::group(["prefix" => "dolar"], function(){
+    Route::post('/', 'DolarController@store');
+    Route::get('/', 'DolarController@index');
 });

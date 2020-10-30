@@ -68,7 +68,7 @@ class InventarioController extends InventarioDeudaController
             'tipo_pago' => $tipo_pago        
         ]);
 
-        if($request->lote_pagado == 0){
+        if($request->lote_pagado == 0 && $request->pago_inicial > 0){
             $this->registrarCredito($inventario->id, $request->pago_inicial);
         }
 

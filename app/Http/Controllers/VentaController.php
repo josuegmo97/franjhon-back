@@ -21,7 +21,9 @@ class VentaController extends Controller
         ]);
 
 
-
+        if(!$request->perdida){
+            $request->perdida = false;
+        }
         
         $articulo = Articulo::where("id", $request->id)->first();
         

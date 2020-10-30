@@ -19,4 +19,18 @@ class ResumenController extends Controller
 
         return $this->showResponse($obj);
     }
+
+    private function ventas()
+    {
+        $hoy = Carbon::now();
+        $ventas_hoy = Venta::whereDay('created_at',$hoy->format("d"))
+                            ->whereMonth('created_at',$hoy->format('m'))
+                            ->whereYear('created_at',$hoy->format("Y"))
+                            ->count();
+
+        $obj = new stdClass;
+        $obj->ventas = $ventas_hoy;
+
+        return $this->showResponse($obj);
+    }
 }

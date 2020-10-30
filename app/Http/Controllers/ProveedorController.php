@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Articulo;
 use App\Proveedor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use stdClass;
 
 class ProveedorController extends Controller
 {
@@ -28,7 +30,11 @@ class ProveedorController extends Controller
             return $this->errorResponse("Proveedor no encontrado");
         }
 
-        return $this->showResponse($pro);
+        $obj = new stdClass;
+        $obj->proveedor = $pro;
+        $obj->extra = $this->extraInfo($id);
+
+        return $this->showResponse($obj);
     }
 
     public function store(Request $request)
@@ -96,5 +102,42 @@ class ProveedorController extends Controller
         // $pro->delete(); // No seria lo correcto eliminarlo
 
         return $this->showResponse("Proveedor eliminado con exito");
+    }
+
+    private function extraInfo($id){
+
+        $articulos = Articulo::where('proveedor_id', $id)->select('id')->count();
+
+        $inventario_deuda = Articulo::where('articulos.proveedor_id', $id)
+                                ->select('inventarios.id', 'inventarios.articulo_id', 'articulos.slug')
+                                ->where('inventarios.lote_pagado', 0)
+                                ->leftJoin('inventarios', 'inventarios.articulo_id', 'articulos.slug')
+                                ->count();
+        
+
+        if($inventario_deuda > 0){
+            $deuda = "Posee Deudas";
+        } else{
+            $deuda = "No Posee Deudas";
+        }
+
+        $inversion_total = Articulo::where('articulos.proveedor_id', $id)
+                                ->select('inventarios.id', 'inventarios.articulo_id', 'articulos.slug', 'inventarios.valor_inicial_usd')
+                                ->leftJoin('inventarios', 'inventarios.articulo_id', 'articulos.slug')
+                                ->get();
+
+
+        $inv = 0 ;
+
+        foreach($inversion_total as $i){
+            $inv+= $i->valor_inicial_usd;
+        }
+
+        $obj = new stdClass;
+        $obj->total_usd_inversion = $inv;
+        $obj->articulos = $articulos;
+        $obj->deudas = $deuda;
+
+        return $obj;
     }
 }
