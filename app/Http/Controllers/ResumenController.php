@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Inventario;
+use App\InventarioDeuda;
 use App\Venta;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,21 +18,28 @@ class ResumenController extends Controller
 
         $obj = new stdClass;
         $obj->ventas = $ventas_hoy;
+        $obj->deudas = $this->deudas();
 
         return $this->showResponse($obj);
     }
 
-    private function ventas()
+    private function deudas()
     {
-        $hoy = Carbon::now();
-        $ventas_hoy = Venta::whereDay('created_at',$hoy->format("d"))
-                            ->whereMonth('created_at',$hoy->format('m'))
-                            ->whereYear('created_at',$hoy->format("Y"))
-                            ->count();
+        $inv = Inventario::where('lote_pagado', false)->get();
+        $total_deuda = 0;
 
-        $obj = new stdClass;
-        $obj->ventas = $ventas_hoy;
+        foreach($inv as $i){
 
-        return $this->showResponse($obj);
+            $total_deuda+=$i->valor_inicial_usd;
+            $deudas = InventarioDeuda::where("inventario_id", $i->id)->get();
+
+            if(count($deudas) > 0){
+                foreach($deudas as $d){
+                    $total_deuda-= $d->cantidad_usd;
+                }
+            }
+        }
+
+        return $total_deuda;
     }
 }

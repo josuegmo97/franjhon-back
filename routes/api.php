@@ -88,9 +88,29 @@ Route::group(['middleware' => 'auth:api'], function() {
     });
 
     
+
+    
 });
 
-Route::group(["prefix" => "dolar"], function(){
+Route::group(["prefix" => "documento"], function(){
+    Route::post('/', 'FacturaController@notaEntrega');
+});
+
+
+
+
+
+
+
+
+/*Route::group(["prefix" => "dolar"], function(){
     Route::post('/', 'DolarController@store');
     Route::get('/', 'DolarController@index');
+});*/
+
+/*Route::group(["prefix" => "documento"], function(){
+    Route::post('/', 'FacturaController@notaEntrega');
 });
+
+
+Route::get('/pdf', 'PdfController@test');*/

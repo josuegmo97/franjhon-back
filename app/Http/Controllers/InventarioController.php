@@ -11,8 +11,31 @@ class InventarioController extends InventarioDeudaController
     public function index($slug = null)
     {
 
+        $data = Inventario::select(
+            'inventarios.articulo_id',
+            'inventarios.cantidad', // Cantidad a registrar en el inventario
+            'inventarios.pcu_usd', // precio compra unitario dolar
+            'inventarios.pcu_ves', // precio compra unitario bolivares
+            'inventarios.valor_inicial_usd', // valor al principio del invientario es decir cuando se compra
+            'inventarios.valor_inicial_ves', // valor al principio del invientario es decir cuando se compra
 
-        return $this->showResponse(Inventario::where("articulo_id", $slug)->orderBy('id', 'desc')->get());
+            'inventarios.pvu_usd', // precio venta unitario dolar
+            'inventarios.pvu_ves', // precio venta unitario bolivares
+            'inventarios.valor_final_usd', // valor al final de la venta, es decir la ganancia
+            'inventarios.valor_final_ves', // valor al final de la venta, es decir la ganancia
+
+            'inventarios.lote_pagado',
+            'inventarios.tipo_pago',
+            'inventarios.id',
+            'inventarios.created_at',
+            'articulos.articulo'
+        )
+        ->where("inventarios.articulo_id", $slug)->orderBy('inventarios.id', 'desc')
+        ->join('articulos', 'articulos.slug', 'inventarios.articulo_id')
+        ->get();
+
+
+        return $this->showResponse($data);
     }
 
     public function store(Request $request)
