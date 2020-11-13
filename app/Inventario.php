@@ -24,4 +24,16 @@ class Inventario extends Model
         'lote_pagado',
         'tipo_pago'
     ];
+
+    static function dataToPDF()
+    {
+        return Inventario::select(
+                    'inventarios.articulo_id',
+                    'inventarios.cantidad',
+                    'inventarios.pvu_usd',
+                    'articulos.articulo'
+                )
+                ->join('articulos', 'articulos.slug', 'inventarios.articulo_id')
+                ->get();
+    }
 }

@@ -20,8 +20,9 @@ Route::get('/', function () {
 
 
 
-/*Route::get('/pdf', 'PdfController@test');
-Route::get('/pdfM', 'PdfController@notaDeEntregaView');*/
+/*Route::get('/pdf', 'PdfController@test');*/
+//Route::get('/pdfM', 'PdfController@notaDeEntregaView');
+//Route::get('/pdf', 'PdfController@inventarioProductos');
 
 
 

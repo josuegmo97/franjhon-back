@@ -94,6 +94,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
 Route::group(["prefix" => "documento"], function(){
     Route::post('/', 'FacturaController@notaEntrega');
+    Route::post('/inventario', 'PdfController@inventarioProductos');
 });
 
 
