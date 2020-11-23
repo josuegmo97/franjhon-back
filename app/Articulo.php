@@ -14,6 +14,7 @@ class Articulo extends Model
         'entradas',
         'salidas',
         'perdidas', // SABOTEO POLICIAS ETC
+        'averias',
         'existencia',
     ];
 
@@ -34,17 +35,46 @@ class Articulo extends Model
 
             $inventarios = Inventario::where("articulo_id", $art->slug)->orderBy('created_at', 'desc')->get();
 
-            foreach($inventarios as $in){
-                $cantidad+= $in->cantidad;
+            if(count($inventarios) > 0){
+                foreach($inventarios as $in){
+                    $cantidad+= $in->cantidad;
+    
+                    if($model != $art->articulo){
+                        $model = $art->articulo;
 
-                if($model != $art->articulo){
-                    $model = $art->articulo;
-                    $precio = $in->pvu_usd;
+                        // Precio de venta
+                        $precio = $in->pvu_usd;
+                        $precio_ves = $in->pvu_ves;
+                        $precio_venta_final_usd = $in->valor_final_usd;
+                        $precio_venta_final_ves = $in->valor_final_ves;
+                        // Precio de compra
+                        $precio_compra_usd = $in->pcu_usd;
+                        $precio_compra_ves = $in->pcu_ves;
+                        $precio_compra_inicial_usd = $in->valor_inicial_usd;
+                        $precio_compra_inicial_ves = $in->valor_inicial_ves;
+                    }
                 }
+            }else{
+                $model = $art->articulo;
+                $precio = 0;
+                $precio_ves = 0;
+                $precio_compra_usd = 0;
+                $precio_compra_ves = 0;
+                $precio_venta_final_usd = 0;
+                $precio_venta_final_ves = 0;
+                $precio_compra_inicial_usd = 0;
+                $precio_compra_inicial_ves = 0;
             }
 
             $obj = new stdClass;
-            $obj->precio = $precio;
+            $obj->precio_venta_unitario_usd = $precio;
+            //$obj->precio_venta_unitario_ves = $precio_ves;
+            $obj->precio_compra_unitario_usd = $precio_compra_usd;
+            //$obj->precio_compra_unitario_ves = $precio_compra_ves;
+            $obj->precio_venta_final_usd = $precio_venta_final_usd;
+            //$obj->precio_venta_final_ves = $precio_venta_final_ves;
+            $obj->precio_compra_inicial_usd = $precio_compra_inicial_usd;
+            //$obj->precio_compra_inicial_ves = $precio_compra_inicial_ves;
             $obj->cantidad = $cantidad;
             $obj->articulo = $art->articulo;
             $obj->codigo = $art->slug;

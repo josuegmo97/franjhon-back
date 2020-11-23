@@ -4,12 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Dolar extends Model
+class ClienteArticulo extends Model
 {
     protected $fillable = [
-        'value',
-        'type' , // mañana y tarde
-        'sabado_domingo'
+        'articulo_id',
+        'cliente_id',
+        'cantidad',
+        'deuda_usd',
+        'lote_pagado'
     ];
 
     protected $casts = [

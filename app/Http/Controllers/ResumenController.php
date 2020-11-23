@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\ClienteArticulo;
+use App\ClienteArticuloDeuda;
 use App\Inventario;
 use App\InventarioDeuda;
 use App\Venta;
@@ -19,6 +21,7 @@ class ResumenController extends Controller
         $obj = new stdClass;
         $obj->ventas = $ventas_hoy;
         $obj->deudas = $this->deudas();
+        $obj->creditos = $this->creditos();
 
         return $this->showResponse($obj);
     }
@@ -32,6 +35,26 @@ class ResumenController extends Controller
 
             $total_deuda+=$i->valor_inicial_usd;
             $deudas = InventarioDeuda::where("inventario_id", $i->id)->get();
+
+            if(count($deudas) > 0){
+                foreach($deudas as $d){
+                    $total_deuda-= $d->cantidad_usd;
+                }
+            }
+        }
+
+        return $total_deuda;
+    }
+
+    private function creditos()
+    {
+        $inv = ClienteArticulo::where('lote_pagado', false)->get();
+        $total_deuda = 0;
+
+        foreach($inv as $i){
+
+            $total_deuda+=($i->cantidad * $i->deuda_usd);
+            $deudas = ClienteArticuloDeuda::where("cliente_articulo_id", $i->id)->get();
 
             if(count($deudas) > 0){
                 foreach($deudas as $d){

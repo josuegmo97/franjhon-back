@@ -115,7 +115,7 @@
                         <th scope="row" class="text-center">{{$v->articulo_id}}</th>
                         <td class="text-center mayu">{{$v->articulo}}</td>
                         <td class="text-center">{{$v->cantidad}}</td>
-                        <td class="text-center">{{number_format($v->puv_ves, 2)}}</td>
+                        <td class="text-center">{{number_format($v->cantidad, 2)}}</td>
                         <td class="text-center">{{number_format($v->descuento, 2)}}</td>
                         <td class="text-center">{{number_format($v->total, 2)}}</td>
                     </tr>

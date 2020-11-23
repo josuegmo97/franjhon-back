@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Articulo;
+use App\Cliente;
 use App\Venta;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,15 @@ class VentaController extends Controller
             $request->vesOriginal = null;
             $request->usdOriginal = null;
         }
+        
+        // solo si es cliente
+        if($request->cliente == true){
+            $request->validate(['cedula' => 'required|numeric']);
+            $cliente = Cliente::where('cedula', $this->limpiar_cedula($request->cedula))->first();
+            if(!$cliente){
+                return $this->errorResponse("Cliente invalido");
+            }
+        }
 
         Venta::create([
             'puv_ves' => $request->ves,
@@ -50,6 +60,10 @@ class VentaController extends Controller
             'articulo_id' => $articulo->slug
         ]);
 
+        if($request->cliente == true){
+            $cliente_deuda = new ClienteArticuloController;
+            $cliente_deuda->crear_deuda_articulo($articulo->slug, $this->limpiar_cedula($request->cedula), $request->usd, $request->cantidad);
+        }
 
         if($request->perdida == true){
             $articulo->perdidas = $articulo->perdidas + $request->cantidad;
@@ -61,6 +75,36 @@ class VentaController extends Controller
         $articulo->update();
 
         return $this->showResponse("Venta Exitosa");
+    }
+
+    public function devolucio_averia(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'cantidadAveria' => 'nullable|integer',
+            'cantidadDevolucion' => 'nullable|integer'
+        ]);
+
+        $venta = Venta::find($request->id);
+        $articulo = Articulo::where("slug", $venta->articulo_id)->first();
+
+        if($request->cantidadAveria != 0 && $request->cantidadAveria != ''){
+            $articulo->averias+=$request->cantidadAveria;
+            $articulo->salidas-=$request->cantidadAveria;
+            $articulo->update();
+        }
+
+        if($request->cantidadDevolucion != 0 && $request->cantidadDevolucion != ''){
+
+            if($request->cantidadDevolucion == $venta->cantidad){
+                $venta->delete();
+            }else{
+                $venta->cantidad-=$request->cantidadDevolucion;
+                $venta->update();
+            }
+        }
+
+        return "Success";
     }
 
 }

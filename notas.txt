@@ -1,0 +1,7 @@
+1. Validar el cambio de precios en Bsf ---- HECHO
+2. Mejorar la estructura del dolar ----- MAS O MENEISHON
+3. Cambiar tamaño del PDF de inventario mas pequeño
+4. Nota de entreg poner mas espacio.
+5. Venta clientes ---- HECHO
+6. Balances
+7. Ver que pasa si hago un PDF sin Inventario de Articulo -> Probar en produccion

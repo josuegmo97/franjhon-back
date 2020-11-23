@@ -56,6 +56,7 @@ class ArticuloController extends Controller
                         'salidas' => 0,
                         'perdidas' => 0, // SABOTEO POLICIAS ETC
                         'existencia' => 0,
+                        'averias' => 0,
                         'slug' => null
                     ]);
         

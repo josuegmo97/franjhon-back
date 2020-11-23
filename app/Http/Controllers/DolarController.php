@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Dolar;
+use App\Inventario;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DolarController extends Controller
 {
@@ -23,8 +25,6 @@ class DolarController extends Controller
                         ->orderBy("created_at", 'desc')
                         ->first();
         }
-
-
 
         $dolar_dia = Carbon::parse($dolar->created_at->format('Y-m-d'))->format('l');
 
@@ -50,6 +50,8 @@ class DolarController extends Controller
             'sabado_domingo' => $info['fin_de_semana']
         ]);
 
+        $this->actualizar_bolivares_inventario($request->value);
+
         return $this->showResponse("Dolar actualizado");
     }
 
@@ -64,11 +66,21 @@ class DolarController extends Controller
         if($data['hora_actual'] >= "09:15" && $data['hora_actual'] < "13:15")
         {
             $data['type'] = "manana";
+        }else{
+            $data['type'] = "tarde";
+        }
+
+        /* viejo */
+        /*
+        if($data['hora_actual'] >= "09:15" && $data['hora_actual'] < "13:15")
+        {
+            $data['type'] = "manana";
         }else if($data['hora_actual'] >= "13:15" && $data['hora_actual'] <= "23:59"){
             $data['type'] = "tarde";
         }else{
             $data['type'] = "sin definir";
         }
+        */
 
         if($data['dia_actual'] == 'Sunday' || $data['dia_actual'] == 'Saturday'){
             $data['fin_de_semana'] = true;
@@ -77,5 +89,25 @@ class DolarController extends Controller
         }
 
         return $data;
+    }
+
+    public function historico()
+    {
+        return Dolar::select("value", "type", "created_at")->orderBy("created_at", 'desc')->get();
+    }
+
+
+    /* esto va en otro lado pero funciona */
+    private function actualizar_bolivares_inventario($valor){
+        $inventarios = Inventario::select('id', 'cantidad', 'pvu_usd', 'valor_final_ves')->get();
+
+        foreach($inventarios as $i){
+
+            $i->pvu_ves = $valor * $i->pvu_usd;
+            $i->valor_final_ves = $i->pvu_ves * $i->cantidad;
+            DB::update("update inventarios set pvu_ves = ?, valor_final_ves = ? where id = ?", [$i->pvu_ves, $i->valor_final_ves, $i->id]);
+
+        }
+        return;
     }
 }

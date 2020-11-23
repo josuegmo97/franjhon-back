@@ -49,4 +49,13 @@ class Controller extends BaseController
         return $slug;
 
     }
+
+    public function limpiar_cedula($cedula)
+    {
+        $puntos = str_replace(".", "", $cedula);
+        $guion = str_replace( "-", "", $puntos);
+        $espacios = str_replace(" ", "", $guion);
+
+        return $espacios;
+    }
 }

@@ -41,6 +41,22 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/edit', 'ProveedorController@edit');
         Route::get('/delete/{id}', 'ProveedorController@delete');
     });
+
+    Route::group(["prefix" => "cliente"], function(){
+        Route::post('/', 'ClienteController@store');
+        Route::get('/', 'ClienteController@index');
+        Route::get('/show/{cedula?}', 'ClienteController@verificar_cliente');
+        /*Route::post('/edit', 'ClienteController@edit');
+        Route::get('/delete/{id}', 'ClienteController@delete');*/
+
+        Route::get('/articulo/{cedula?}', 'ClienteArticuloController@lista_deuda');
+
+        // DEUDA
+        Route::get('/pendiente/show/{id?}', 'ClienteArticuloDeudaController@verDeudas');
+        Route::post('/pendiente/delete', 'ClienteArticuloDeudaController@delete');
+        Route::post('/pendiente/agregar', 'ClienteArticuloDeudaController@agregarCredito');
+        
+    });
     
     Route::group(["prefix" => "articulo"], function(){
         Route::post('/', 'ArticuloController@store');
@@ -67,16 +83,18 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::group(["prefix" => "venta"], function(){
         Route::post('/', 'VentaController@store');
         Route::post('/consulta', 'VentaController@consulta');
+        Route::post('/devolucion/averia', 'VentaController@devolucio_averia');
         
-        Route::get('/slug/{slug?}', 'VentaController@index');
-        Route::post('/edit', 'VentaController@edit');
-        Route::post('/delete', 'VentaController@delete');
+        //Route::get('/slug/{slug?}', 'VentaController@index');
+        //Route::post('/edit', 'VentaController@edit');
+        //Route::post('/delete', 'VentaController@delete');
         //Route::get('/show/{id}', 'VentaController@show');
     });
 
     Route::group(["prefix" => "dolar"], function(){
         Route::post('/', 'DolarController@store');
         Route::get('/', 'DolarController@index');
+        Route::get('/historico', 'DolarController@historico');
     });
 
     Route::group(["prefix" => "resumen"], function(){
@@ -100,14 +118,14 @@ Route::group(["prefix" => "documento"], function(){
 
 
 
+Route::post('/b', 'BalanceController@balance');
 
 
 
-
-/*Route::group(["prefix" => "dolar"], function(){
+Route::group(["prefix" => "dolar"], function(){
     Route::post('/', 'DolarController@store');
     Route::get('/', 'DolarController@index');
-});*/
+});
 
 /*Route::group(["prefix" => "documento"], function(){
     Route::post('/', 'FacturaController@notaEntrega');

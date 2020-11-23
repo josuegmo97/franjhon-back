@@ -12,7 +12,7 @@ class FacturaController extends Controller
     public function notaEntrega(Request $request){
 
         //dd($request->all());
-        $request->validate(['ids' => 'required|array']);
+        $request->validate(['ids' => 'required|array', "dolar" => "required"]);
 
         $ventas = Venta::notaEntrega($request->ids);
 
@@ -24,7 +24,8 @@ class FacturaController extends Controller
                 Descuentos
             */
             if($v->precio_modificado == true){
-                $v->descuento = $v->puv_ves_original - $v->puv_ves;
+                $v->descuento = (float)$v->puv_ves_original - (float)$v->puv_ves;
+                //dd($v->descuento, $v->puv_ves_original, $v->puv_ves);
                 $v->puv_ves = $v->puv_ves_original;
                 $v->total = $v->cantidad * ($v->puv_ves - $v->descuento);
             }else{
@@ -51,6 +52,7 @@ class FacturaController extends Controller
         $obj->telefono = $request->telefono;
         $obj->cedula = $request->cedula;
         $obj->observaciones = $request->observaciones;
+        $obj->dolar = $request->dolar;
 
         $pdf = new PdfController;
 

@@ -32,6 +32,7 @@ class PdfController extends Controller
             'ventas' => $data->ventas,
             'cedula' => $data->cedula,
             'observaciones' => $data->observaciones,
+            'dolar' => $data->dolar,
         ];
 
         $now = Carbon::now()->format("d-m-Y");
@@ -50,12 +51,17 @@ class PdfController extends Controller
     public function notaDeEntregaView()
     {
        // $pdf = App::make('dompdf.wrapper');
-        $data_ordenada = $this->array_sort_by(Articulo::getDataPDF(), 'articulo');
-        return view('pdf/inventario');
+       $now = Carbon::now()->format("d-m-Y");
+       $data_ordenada = $this->array_sort_by(Articulo::getDataPDF(), 'articulo');
+
+       $info = [
+           'inventarios' => $data_ordenada,
+           'fecha' => $now
+       ];
+
+        return view('pdf/inventario', $info);
         return;
     }
-
-
 
     public function inventarioProductos()
     {
