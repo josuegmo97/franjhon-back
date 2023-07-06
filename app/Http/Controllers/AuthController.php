@@ -13,11 +13,13 @@ class AuthController extends Controller
             'email'    => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed',
         ]);
+
         $user = new User([
             'name'     => $request->name,
             'email'    => $request->email,
-            'password' => bcrypt($request->password),
+            // 'password' => bcrypt($request->password),
         ]);
+
         $user->save();
         return response()->json([
             'message' => 'Successfully created user!'], 201);
@@ -29,9 +31,9 @@ class AuthController extends Controller
             'password'    => 'required|string',
             'remember_me' => 'boolean',
         ]);
-        
-        //$credentials = request(['email', 'password']);
-        $credentials = ['name' => $request->email, 'password' => $request->password];
+
+        $credentials = request(['email', 'password']);
+        // $credentials = ['name' => $request->email, 'password' => $request->password];
         if (!Auth::attempt($credentials)) {
             return $this->errorResponse("Credenciales Invalidas");
         }
@@ -54,7 +56,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();
-        return response()->json(['message' => 
+        return response()->json(['message' =>
             'Successfully logged out']);
     }
 
